@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Filters pipeline demo</title>
+    <script src="Scripts/jquery-1.8.2.min.js"></script>
+    <script src="Scripts/knockout-2.1.0.js"></script>
+    <script src="Scripts/ServiceClient.js"></script>
+    <script src="Scripts/LogosList.js"></script>
+</head>
+<body>
+    
+    <div id="logos" data-bind="foreach: filtered">
+        <div data-bind="text: Name"></div>
+    </div>
+    
+
+    <script type="text/javascript">
+
+        function LogosModel() {
+            this.logos = [{ Name: 'string', Description: 'string', Available: true, ImageUrl: 'string', Category: 'string' },
+                          { Name: 'string', Description: 'string', Available: true, ImageUrl: 'string', Category: 'string' },
+                          { Name: 'string', Description: 'string', Available: true, ImageUrl: 'string', Category: 'string' }
+            ];
+            
+            //ko.observableArray(this.logos);
+        }
+
+        $(document).ready(function() {
+
+            var model = new LogoList();
+                       
+            //ko.observableArray(model.filtered);
+
+            //ko.applyBindings(model);
+
+        });
+        
+    </script>
+
+</body>
+</html>
