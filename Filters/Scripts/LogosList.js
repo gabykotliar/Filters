@@ -1,15 +1,17 @@
+var ko;
 var LogoList = (function () {
     function LogoList() {
         this.LoadLogos();
-        this.filtered = [];
+        this.filtered = ko.observableArray([]);
     }
     LogoList.prototype.LoadLogos = function () {
         var _this = this;
         var client = new Filters.ServiceClients.LogoService('/api/logo', function (data) {
-            _this.filtered.concat(data);
-            var ko;
-            ko.observableArray(_this.filtered);
-            ko.applyBindings(_this);
+            console.log(Date.now().toString());
+            data.forEach(function (value, index) {
+                _this.filtered.push(value);
+            });
+            console.log(Date.now().toString());
         });
         client.getAll();
     };

@@ -4,10 +4,10 @@ module Filters.ServiceClients {
 
     export interface Logo { 
         Name: string;
-        Description: string;
-        Available: bool;
-        ImageUrl: string;
-        Category: string;
+        Description?: string;
+        Available?: bool;
+        ImageUrl?: string;
+        Category?: string;
     }
 
     export class LogoService {

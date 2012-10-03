@@ -2,6 +2,8 @@
 /// <reference path="ServiceClient.ts" />
 /// <reference path="knockout-2.1.0.js" />
 
+var ko: any;
+
 class LogoList {
 
     filtered: Filters.ServiceClients.Logo[];
@@ -9,20 +11,15 @@ class LogoList {
     constructor () {        
 
         this.LoadLogos();
-        this.filtered = [];        
+        this.filtered = ko.observableArray([]);
     }
 
     LoadLogos() {
         var client = new Filters.ServiceClients.LogoService('/api/logo',
                                                             data => {
-                                                                //this.filtered.push(data[0]);
-                                                                this.filtered.concat(data);
-
-                                                                var ko: any;
-
-                                                                ko.observableArray(this.filtered);
-
-                                                                ko.applyBindings(this);
+                                                                console.log(Date.now().toString());
+                                                                data.forEach((value, index) => { this.filtered.push(value); });
+                                                                console.log(Date.now().toString());
                                                             });
 
         client.getAll();
