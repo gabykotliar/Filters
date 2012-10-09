@@ -9,13 +9,15 @@ namespace Filters.Models
     {
         private static readonly List<string> descriptions; 
         private static readonly List<string> images; 
-        private static readonly List<string> categories; 
+        private static readonly List<string> categories;
+        private static readonly List<bool> states; // Nico
 
         static LogoRepository()
         {
             descriptions = BuildDescriptions();
             images = BuildImages();
             categories = new List<string> { "Cars", "Consumer", "Comics", "Technology" };
+            states = new List<bool> {true, false}; // Nico
         }
 
         public static IEnumerable<Logo> FindAll()
@@ -25,6 +27,7 @@ namespace Filters.Models
                         .With(l => l.Description = Pick<string>.RandomItemFrom(descriptions))
                         .And(l => l.ImageUrl = "https://www.brandsoftheworld.com/sites/default/files/styles/logo-thumbnail/public/" + Pick<string>.RandomItemFrom(images))
                         .And(l => l.Category = Pick<String>.RandomItemFrom(categories))
+                        .And(l => l.Available = Pick<bool>.RandomItemFrom(states)) // Nico
                     .Build();
         }
 

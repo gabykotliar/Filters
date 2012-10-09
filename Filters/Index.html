@@ -48,12 +48,19 @@
                 <li>Comics</li>
                 <li>Technology</li>
             </ul>
+            <h3>Available</h3>
+            All <input checked="checked" value="undefined" class="radioButton" type="radio" name="available" id="all" />
+            Available <input value="true" class="radioButton" type="radio" name="available" id="available" />
+            Unavailable <input value="false" class="radioButton" type="radio" name="available" id="unavailable" />
+            
         </div>
     </section>
 
     <div id="logos" data-bind="foreach: filtered">
         <div class="logo">
             <div class="name" data-bind="text: Name"></div>
+            <div class="category" data-bind="text: Category"></div>
+            <div class="available" data-bind="text: Available"></div>
             <img data-bind="attr:{src: ImageUrl}" />
         </div>
     </div>

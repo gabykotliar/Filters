@@ -1,9 +1,11 @@
-module Filters.Events {
+    module Filters.Events {
 
     interface Listener {
         callback: (event: any) => any;
         context: any;
     }
+    
+    
 
     export class Observable {
 
