@@ -1,15 +1,38 @@
 /// <reference path="jquery.d.ts" />
 /// <reference path="Events.ts" />
 /// <reference path="Model.ts" />
+/// <reference path="Views.ts" />
 
 module Filters.Pipeline {
 
     export class FiltersPipeline { 
 
-        filters: Filter[];
+        filters: Filter[];        
 
-        constructor () { 
-            this.filters = new Filter[]();
+        constructor (public model: Views.IndexModel) { 
+
+            var cf = new Pipeline.CategoriesFilter();
+            cf.on('changed', () => {            
+                this.updateResults();
+            });
+
+            this.filters = [cf];
+        }
+
+        updateResults() { 
+
+            var temp = this.model.logos;
+
+            for (var i = 0, len = this.filters.length; i < len; i++)
+            { 
+                temp = this.filters[i].execute(temp);
+            }
+
+            this.model.filtered.splice(0);
+            for (var i = 0, len = temp.length; i < len; i++)
+            { 
+                this.model.filtered.push(temp[i]);
+            }                 
         }
     }
 
@@ -28,14 +51,14 @@ module Filters.Pipeline {
 
             this.currentCategory = 'All';
 
-            $('#categories li').click(this.onCategoryChanged);
+            $('#categories li').click((e: JQueryEventObject) => { this.onCategoryChanged(e) });
         }
 
         onCategoryChanged(event: JQueryEventObject) { 
 
             this.currentCategory = (<any>event.currentTarget).innerText;
          
-            //this.trigger('changed');
+            this.trigger('changed');
         }
 
         execute(input: Model.Logo[])

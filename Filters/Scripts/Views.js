@@ -12,8 +12,8 @@ var Filters;
             };
             Index.prototype.LoadDataCompleted = function (data) {
                 var model = new IndexModel(data);
-                var pipeline = new Filters.Pipeline.FiltersPipeline();
-                pipeline.filters.push(new Filters.Pipeline.CategoriesFilter());
+                var pipeline = new Filters.Pipeline.FiltersPipeline(model);
+                pipeline.updateResults();
                 ko.applyBindings(model);
             };
             return Index;
@@ -22,7 +22,7 @@ var Filters;
         var IndexModel = (function () {
             function IndexModel(logos) {
                 this.logos = logos;
-                this.filtered = ko.observableArray(logos);
+                this.filtered = ko.observableArray([]);
             }
             return IndexModel;
         })();

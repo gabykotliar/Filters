@@ -26,8 +26,8 @@ module Filters.Views {
         {
             var model = new IndexModel(data);
 
-            var pipeline = new Pipeline.FiltersPipeline();
-            pipeline.filters.push(new Pipeline.CategoriesFilter());
+            var pipeline = new Pipeline.FiltersPipeline(model);
+            pipeline.updateResults();
 
             ko.applyBindings(model);
         }
@@ -35,11 +35,11 @@ module Filters.Views {
 
     export class IndexModel {
 
-        filtered: Model.Logo[];        
+        filtered: Model.Logo[];
 
         constructor (public logos: Model.Logo[]) {
             
-            this.filtered = ko.observableArray(logos);
+            this.filtered = ko.observableArray([]);
         }
     }
 }

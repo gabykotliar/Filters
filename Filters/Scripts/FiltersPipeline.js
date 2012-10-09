@@ -7,21 +7,43 @@ var Filters;
 (function (Filters) {
     (function (Pipeline) {
         var FiltersPipeline = (function () {
-            function FiltersPipeline() {
-                this.filters = new Array();
+            function FiltersPipeline(model) {
+                this.model = model;
+                var _this = this;
+                var cf = new Pipeline.CategoriesFilter();
+                cf.on('changed', function () {
+                    _this.updateResults();
+                });
+                this.filters = [
+                    cf
+                ];
             }
+            FiltersPipeline.prototype.updateResults = function () {
+                var temp = this.model.logos;
+                for(var i = 0, len = this.filters.length; i < len; i++) {
+                    temp = this.filters[i].execute(temp);
+                }
+                this.model.filtered.splice(0);
+                for(var i = 0, len = temp.length; i < len; i++) {
+                    this.model.filtered.push(temp[i]);
+                }
+            };
             return FiltersPipeline;
         })();
         Pipeline.FiltersPipeline = FiltersPipeline;        
         var CategoriesFilter = (function (_super) {
             __extends(CategoriesFilter, _super);
             function CategoriesFilter() {
+                var _this = this;
                         _super.call(this);
                 this.currentCategory = 'All';
-                $('#categories li').click(this.onCategoryChanged);
+                $('#categories li').click(function (e) {
+                    _this.onCategoryChanged(e);
+                });
             }
             CategoriesFilter.prototype.onCategoryChanged = function (event) {
                 this.currentCategory = (event.currentTarget).innerText;
+                this.trigger('changed');
             };
             CategoriesFilter.prototype.execute = function (input) {
                 if(this.currentCategory == 'All') {
