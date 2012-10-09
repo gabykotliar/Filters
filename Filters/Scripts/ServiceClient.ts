@@ -1,20 +1,19 @@
 /// <reference path="jquery.d.ts" />
+/// <reference path="Model.ts" />
 
-module Filters.ServiceClients { 
-
-    export interface Logo { 
-        Name: string;
-        Description?: string;
-        Available?: bool;
-        ImageUrl?: string;
-        Category?: string;
-    }
+module Filters.ServiceClients {
 
     export class LogoService {
 
-        constructor (public serviceUrl: string, public onSuccess: (data: Logo[]) => any) { }
+        private onSuccess: (data: Model.Logo[]) => any;
+        
+        constructor (public serviceUrl: string) {
+             
+        }
 
-        getAll() {            
+        getAll(successCallback: (data: Model.Logo[]) => any) {            
+
+            this.onSuccess = successCallback;
 
             var r = $.ajax(this.serviceUrl, 
                            {
@@ -26,7 +25,7 @@ module Filters.ServiceClients {
                            });
         }
 
-        private getAllSucces(data: Logo[], textStatus: string, jqXHR: JQueryXHR) {                     
+        private getAllSucces(data: Model.Logo[], textStatus: string, jqXHR: JQueryXHR) {
             this.onSuccess(data);
         }
 

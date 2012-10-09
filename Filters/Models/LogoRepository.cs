@@ -20,7 +20,7 @@ namespace Filters.Models
 
         public static IEnumerable<Logo> FindAll()
         {
-            return Builder<Logo>.CreateListOfSize(1000)
+            return Builder<Logo>.CreateListOfSize(100)
                     .All()
                         .With(l => l.Description = Pick<string>.RandomItemFrom(descriptions))
                         .And(l => l.ImageUrl = "https://www.brandsoftheworld.com/sites/default/files/styles/logo-thumbnail/public/" + Pick<string>.RandomItemFrom(images))

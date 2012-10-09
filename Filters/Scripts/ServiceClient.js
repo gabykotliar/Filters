@@ -2,11 +2,11 @@ var Filters;
 (function (Filters) {
     (function (ServiceClients) {
         var LogoService = (function () {
-            function LogoService(serviceUrl, onSuccess) {
+            function LogoService(serviceUrl) {
                 this.serviceUrl = serviceUrl;
-                this.onSuccess = onSuccess;
             }
-            LogoService.prototype.getAll = function () {
+            LogoService.prototype.getAll = function (successCallback) {
+                this.onSuccess = successCallback;
                 var r = $.ajax(this.serviceUrl, {
                     type: 'GET',
                     accepts: 'JSON',

@@ -122,21 +122,40 @@
     <Content Include="Global.asax" />
     <Content Include="Index.html" />
     <TypeScriptCompile Include="Scripts\ServiceClient.ts" />
+    <Content Include="Scripts\Index.Model.js">
+      <DependentUpon>ServiceClient.ts</DependentUpon>
+    </Content>
+    <TypeScriptCompile Include="Scripts\Model.ts" />
+    <TypeScriptCompile Include="Scripts\Knockout.d.ts" />
+    <Content Include="Scripts\Knockout.d.js">
+      <DependentUpon>Knockout.d.ts</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Model.js">
+      <DependentUpon>Model.ts</DependentUpon>
+    </Content>
+    <Content Include="Scripts\ServiceClient.js">
+      <DependentUpon>ServiceClient.ts</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <TypeScriptCompile Include="Scripts\FiltersPipeline.ts" />
+    <Content Include="Scripts\FiltersPipeline.js">
+      <DependentUpon>FiltersPipeline.ts</DependentUpon>
+    </Content>
+    <TypeScriptCompile Include="Scripts\Events.ts" />
+    <Content Include="Scripts\Events.js">
+      <DependentUpon>Events.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <TypeScriptCompile Include="Scripts\jquery.d.ts" />
     <Content Include="Scripts\jquery.d.js">
       <DependentUpon>jquery.d.ts</DependentUpon>
     </Content>
-    <TypeScriptCompile Include="Scripts\LogosList.ts" />
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
-    <Content Include="Scripts\LogosList.js">
-      <DependentUpon>LogosList.ts</DependentUpon>
-    </Content>
-    <Content Include="Scripts\ServiceClient.js">
-      <DependentUpon>ServiceClient.ts</DependentUpon>
+    <TypeScriptCompile Include="Scripts\Views.ts" />
+    <Content Include="Scripts\Views.js">
+      <DependentUpon>Views.ts</DependentUpon>
     </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
