@@ -11,7 +11,7 @@
             margin: 10px;
             padding: 5px;
             width: 250px;
-            height: 250px;
+            height: 450px;
             border: solid 1px black;
             text-align: center;
         }
@@ -53,7 +53,10 @@
             Available <input value="true" class="radioButton" type="radio" name="available" id="available" />
             Unavailable <input value="false" class="radioButton" type="radio" name="available" id="unavailable" />
             
-        </div>
+            <h3>Search</h3>
+            Search <input type="text" id="search" class="search" /> <input type="submit" id="searchButton" value="Buscar"/>
+            
+         </div>
     </section>
 
     <div id="logos" data-bind="foreach: filtered">
@@ -61,6 +64,7 @@
             <div class="name" data-bind="text: Name"></div>
             <div class="category" data-bind="text: Category"></div>
             <div class="available" data-bind="text: Available"></div>
+            <div class="descriptions" data-bind="text: Description"></div>
             <img data-bind="attr:{src: ImageUrl}" />
         </div>
     </div>

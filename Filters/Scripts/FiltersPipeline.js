@@ -18,10 +18,25 @@ var Filters;
                 sf.on('changed', function () {
                     _this.updateResults();
                 });
+                var bf = new Pipeline.SearchFilter();
+                bf.on('changed', function () {
+                    _this.updateResults();
+                });
                 this.filters = [
                     cf, 
-                    sf
+                    sf, 
+                    bf
                 ];
+                this.filters = [
+                    new Pipeline.CategoriesFilter(), 
+                    new Pipeline.StateFilter(), 
+                    new Pipeline.SearchFilter()
+                ];
+                for(var i = 0, len = this.filters.length; i < len; i++) {
+                    this.filters[i].on('changed', function () {
+                        _this.updateResults();
+                    });
+                }
             }
             FiltersPipeline.prototype.updateResults = function () {
                 var temp = this.model.logos;
@@ -36,6 +51,36 @@ var Filters;
             return FiltersPipeline;
         })();
         Pipeline.FiltersPipeline = FiltersPipeline;        
+        var SearchFilter = (function (_super) {
+            __extends(SearchFilter, _super);
+            function SearchFilter() {
+                var _this = this;
+                        _super.call(this);
+                this.currentSearchText = $('.search').val();
+                $('#searchButton').click(function (e) {
+                    _this.onSearchTextBoxChanged(e);
+                });
+            }
+            SearchFilter.prototype.onSearchTextBoxChanged = function (event) {
+                this.currentSearchText = $('.search').val();
+                this.trigger('changed');
+            };
+            SearchFilter.prototype.execute = function (input) {
+                if(this.currentSearchText == '') {
+                    return input;
+                }
+                var filtered;
+                filtered = [];
+                for(var i = 0, len = input.length; i < len; i++) {
+                    if(input[i].Description.indexOf(this.currentSearchText) != -1 || input[i].Name.indexOf(this.currentSearchText) != -1) {
+                        filtered.push(input[i]);
+                    }
+                }
+                return filtered;
+            };
+            return SearchFilter;
+        })(Filters.Events.Observable);
+        Pipeline.SearchFilter = SearchFilter;        
         var StateFilter = (function (_super) {
             __extends(StateFilter, _super);
             function StateFilter() {

@@ -5,14 +5,14 @@
 
 module Filters.Pipeline {
 
-    export class FiltersPipeline { 
+    export class FiltersPipeline {
 
-        filters: Filter[];        
+        filters: Filter[];
 
-        constructor (public model: Views.IndexModel) { 
+        constructor (public model: Views.IndexModel) {
 
             var cf = new Pipeline.CategoriesFilter();
-            cf.on('changed', () => {            
+            cf.on('changed', () => {
                 this.updateResults();
             });
 
@@ -21,43 +21,102 @@ module Filters.Pipeline {
                 this.updateResults();
             });
 
-            this.filters = [cf,sf];
+            var bf = new Pipeline.SearchFilter();
+            bf.on('changed', () => {
+                this.updateResults();
+            });
+
+            this.filters = [cf, sf, bf];
 
             this.filters = [new Pipeline.CategoriesFilter(),
-                            new Pipeline.StateFilter()];
+                            new Pipeline.StateFilter(),
+                            new Pipeline.SearchFilter()];
 
-            for (var i = 0, len = this.filters.length; i < len; i++)
-            { 
+            for (var i = 0, len = this.filters.length; i < len; i++) {
                 this.filters[i].on('changed', () => {
                     this.updateResults();
                 });
             }
         }
 
-        updateResults() { 
+        updateResults() {
 
             var temp = this.model.logos;
-
-            for (var i = 0, len = this.filters.length; i < len; i++)
-            { 
+            
+            for (var i = 0, len = this.filters.length; i < len; i++) {
                 temp = this.filters[i].execute(temp);
             }
 
-            // mover a updatedFilteredWith(temp)
+            //mover a updatedFilteredWith(temp)
+            //this.updatedFilteredWith(temp);
             this.model.filtered.splice(0);
-            for (var i = 0, len = temp.length; i < len; i++)
-            { 
+            for (var i = 0, len = temp.length; i < len; i++) {
                 this.model.filtered.push(temp[i]);
-            }                 
+            }
         }
+        //updatedFilteredWith(temp: Model.Logo[]) {
+        //    this.model.filtered.splice(0);
+        //    for (var i = 0, len = temp.length; i < len; i++) {
+        //        this.model.filtered.push(temp[i]);
+        //    }
+        //}
     }
 
-    interface Filter  {
+    interface Filter {
         execute(input: Model.Logo[]): Model.Logo[];
         on(eventType: string, callback: (event: any) => any, context?: any): any;
     }
 
 
+    export class SearchFilter
+        extends Events.Observable
+        implements Filter { 
+        currentSearchText: string;
+
+        constructor () {
+            super();
+
+            this.currentSearchText = $('.search').val();
+            $('#searchButton').click((e: JQueryEventObject) => { this.onSearchTextBoxChanged(e) });
+        }
+
+        //verifyBackspaceKeyPress(event: JQueryEventObject) { 
+        //    var code = event.which;
+        //    if (code == 08) {
+        //        this.currentSearchText = $('.search').val();
+        //        //this.currentSearchText = this.currentSearchText.substring(0, this.currentSearchText.length - 1);
+        //        this.trigger('changed');
+        //    }
+        //    else {
+        //        this.onSearchTextBoxChanged(event);
+                
+        //    }
+        //}
+
+        onSearchTextBoxChanged(event: JQueryEventObject) { 
+            this.currentSearchText =  $('.search').val();
+            //this.currentSearchText = this.currentSearchText.concat(String.fromCharCode(event.which));
+            this.trigger('changed');
+            
+        }
+
+        execute(input: Model.Logo[])
+        {
+            //this.currentSearchText = $('.search').val();
+            if (this.currentSearchText == '') return input;
+
+            var filtered: Model.Logo[];
+            filtered = [];
+            
+
+            for (var i = 0, len = input.length; i < len; i++)
+            { 
+                if (input[i].Description.indexOf(this.currentSearchText) != -1  || input[i].Name.indexOf(this.currentSearchText) != -1  ) 
+                    filtered.push(input[i]);   
+            }
+            return filtered;
+        }
+    }
 
     export class StateFilter
         extends Events.Observable
@@ -106,7 +165,6 @@ module Filters.Pipeline {
             return; // returns undefined
         };
 
-
     }
 
     export class CategoriesFilter
@@ -121,7 +179,6 @@ module Filters.Pipeline {
             this.currentCategory = 'All';
            
             $('#categories li').click((e: JQueryEventObject) => { this.onCategoryChanged(e) });
-            
         }
 
         onCategoryChanged(event: JQueryEventObject) { 

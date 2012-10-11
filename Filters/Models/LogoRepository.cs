@@ -17,7 +17,7 @@ namespace Filters.Models
             descriptions = BuildDescriptions();
             images = BuildImages();
             categories = new List<string> { "Cars", "Consumer", "Comics", "Technology" };
-            states = new List<bool> {true, false}; // Nico
+            states = new List<bool> {true, false}; 
         }
 
         public static IEnumerable<Logo> FindAll()
@@ -27,7 +27,7 @@ namespace Filters.Models
                         .With(l => l.Description = Pick<string>.RandomItemFrom(descriptions))
                         .And(l => l.ImageUrl = "https://www.brandsoftheworld.com/sites/default/files/styles/logo-thumbnail/public/" + Pick<string>.RandomItemFrom(images))
                         .And(l => l.Category = Pick<String>.RandomItemFrom(categories))
-                        .And(l => l.Available = Pick<bool>.RandomItemFrom(states)) // Nico
+                        .And(l => l.Available = Pick<bool>.RandomItemFrom(states)) 
                     .Build();
         }
 
@@ -145,7 +145,7 @@ namespace Filters.Models
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras semper, enim nec porttitor interdum, elit mauris tristique velit, a aliquam purus quam in odio. Aenean a accumsan mi. Proin at est massa. Proin luctus, dolor sit amet volutpat dignissim, erat ",
                     "elit fringilla dui, a fringilla magna diam vel justo. Fusce non arcu volutpat arcu aliquam varius. Sed elit metus, porttitor non cursus ut, varius eget tortor. Duis nec magna justo. Morbi adipiscing, metus ac ornare hendrerit, mi leo laoreet lectus, ut ",
                     "euismod massa ligula non nibh. Cras dui purus, accumsan vel molestie ut, interdum et augue. In vitae vestibulum neque. Quisque quis urna ac erat semper fringilla vitae sit amet diam. Phasellus ultrices, nisi nec vestibulum varius, eros purus varius ",
-                    "arcu, id euismod sapien ante ac ante. Fusce non laoreet nibh. Ut a lacus ligula. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed tellus est, vehicula sed iaculis vel, dictum eget tellus.",
+                    "arcu,  id euismod sapien ante ac ante. Fusce non laoreet nibh. Ut a lacus ligula. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed tellus est, vehicula sed iaculis vel, dictum eget tellus.",
                     "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Suspendisse potenti. Curabitur a feugiat nunc. Sed sed pretium lectus. Duis gravida quam pellentesque erat placerat facilisis et in nibh. Donec ac odio enim",
                     "am ullamcorper dignissim sapien, sit amet condimentum erat tempor nec. Nulla magna mi, tincidunt in adipiscing vitae, pellentesque ultrices dui. Fusce suscipit iaculis dolor, id blandit arcu pharetra ut. Suspendisse potenti. Nulla facilisi.",
                     "Ut id nisi nisl. Ut in mauris sit amet tortor feugiat vehicula. Proin eleifend convallis orci a viverra. Aenean vestibulum dictum tempus. Ut tempor neque nec ante laoreet luctus. Etiam quis mauris dictum arcu ultricies vehicula non sed nisi. Nulla nibh ",
