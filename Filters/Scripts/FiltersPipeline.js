@@ -22,15 +22,15 @@ var Filters;
                 bf.on('changed', function () {
                     _this.updateResults();
                 });
+                var pf = new Pipeline.PagingFilter(11);
+                pf.on('changed', function () {
+                    _this.updateResults();
+                });
                 this.filters = [
                     cf, 
                     sf, 
-                    bf
-                ];
-                this.filters = [
-                    new Pipeline.CategoriesFilter(), 
-                    new Pipeline.StateFilter(), 
-                    new Pipeline.SearchFilter()
+                    bf, 
+                    pf
                 ];
                 for(var i = 0, len = this.filters.length; i < len; i++) {
                     this.filters[i].on('changed', function () {
@@ -51,6 +51,54 @@ var Filters;
             return FiltersPipeline;
         })();
         Pipeline.FiltersPipeline = FiltersPipeline;        
+        var PagingFilter = (function (_super) {
+            __extends(PagingFilter, _super);
+            function PagingFilter(totalItems) {
+                        _super.call(this);
+                this.totalItems = totalItems;
+                this.startingElement = 0;
+                this.lastElement = 0;
+                this.pageSize = 9;
+                this.pageIndex = 1;
+                this.prevButtonText = '<<';
+                this.nextButtonText = '>>';
+                this.paginationContainer = $('#pagination');
+            }
+            PagingFilter.prototype.onPageSelected = function (pageIndex, pager, ctx) {
+                ctx.startingElement = pageIndex * ctx.pageSize;
+                ctx.lastElement = Math.min((pageIndex + 1) * ctx.pageSize, ctx.totalItems);
+                ctx.trigger('changed');
+                return false;
+            };
+            PagingFilter.prototype.getOptionsForPagingPlugin = function () {
+                return {
+                    callback: this.onPageSelected,
+                    callbackContext: this,
+                    items_per_page: this.pageSize,
+                    num_display_entries: 2,
+                    num_edge_entries: 1,
+                    prev_text: this.prevButtonText,
+                    next_text: this.nextButtonText
+                };
+            };
+            PagingFilter.prototype.createPager = function () {
+                var opt = this.getOptionsForPagingPlugin();
+                $(this.paginationContainer).pagination(this.totalItems, opt);
+            };
+            PagingFilter.prototype.UpdateTotalItemsIfChanged = function (input) {
+                if(this.totalItems == input.length) {
+                    return;
+                }
+                this.totalItems = input.length;
+                this.createPager();
+            };
+            PagingFilter.prototype.execute = function (input) {
+                this.UpdateTotalItemsIfChanged(input);
+                return input.slice(this.startingElement, this.lastElement);
+            };
+            return PagingFilter;
+        })(Filters.Events.Observable);
+        Pipeline.PagingFilter = PagingFilter;        
         var SearchFilter = (function (_super) {
             __extends(SearchFilter, _super);
             function SearchFilter() {

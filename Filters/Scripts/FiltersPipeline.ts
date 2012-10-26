@@ -3,11 +3,17 @@
 /// <reference path="Model.ts" />
 /// <reference path="Views.ts" />
 
+
 module Filters.Pipeline {
 
+    //interface PagingPlugin
+    //{ 
+    //    pagination(number, any): any;
+    //}
     export class FiltersPipeline {
 
         filters: Filter[];
+        listeners: { };
 
         constructor (public model: Views.IndexModel) {
 
@@ -26,11 +32,12 @@ module Filters.Pipeline {
                 this.updateResults();
             });
 
-            this.filters = [cf, sf, bf];
+            var pf = new Pipeline.PagingFilter(11);
+            pf.on('changed', () => { 
+                this.updateResults();
+            });
 
-            this.filters = [new Pipeline.CategoriesFilter(),
-                            new Pipeline.StateFilter(),
-                            new Pipeline.SearchFilter()];
+            this.filters = [cf, sf, bf, pf];           
 
             for (var i = 0, len = this.filters.length; i < len; i++) {
                 this.filters[i].on('changed', () => {
@@ -38,6 +45,26 @@ module Filters.Pipeline {
                 });
             }
         }
+
+        //fire(event) {
+        //    if (typeof event == "string")
+        //        event = { type: event };
+
+        //    if (!event.target)
+        //        event.target = this;
+
+        //    if (!event.type)
+        //        throw new Error("Event object missing 'type' property.");
+
+        //    if (this.listeners[event.type] instanceof Array) {
+        //        var list = this.listeners[event.type];
+
+        //        for (var i = 0, len = list.length; i < len; i++) {
+        //            var ctx = list[i].context || this;
+        //            list[i].func.call(ctx, event);
+        //        }
+        //    }
+        //}
 
         updateResults() {
 
@@ -54,12 +81,6 @@ module Filters.Pipeline {
                 this.model.filtered.push(temp[i]);
             }
         }
-        //updatedFilteredWith(temp: Model.Logo[]) {
-        //    this.model.filtered.splice(0);
-        //    for (var i = 0, len = temp.length; i < len; i++) {
-        //        this.model.filtered.push(temp[i]);
-        //    }
-        //}
     }
 
     interface Filter {
@@ -67,6 +88,76 @@ module Filters.Pipeline {
         on(eventType: string, callback: (event: any) => any, context?: any): any;
     }
 
+
+    // Filtro de Paginacion
+
+    export class PagingFilter
+        extends Events.Observable
+        implements Filter {
+            pageSize: number;
+            pageIndex: number;
+            prevButtonText: string;
+            nextButtonText: string;
+            paginationContainer: any;
+            startingElement: number;
+            lastElement: number;    
+
+        constructor (public totalItems:number) {
+            super();
+            this.startingElement = 0;
+            this.lastElement = 0;
+            this.pageSize = 9;
+            this.pageIndex = 1;
+            this.prevButtonText = '<<';
+            this.nextButtonText = '>>';
+            this.paginationContainer = $('#pagination');
+        }
+
+        onPageSelected(pageIndex, pager, ctx) {
+             ctx.startingElement = pageIndex * ctx.pageSize;
+             ctx.lastElement = Math.min((pageIndex + 1) * ctx.pageSize, ctx.totalItems);
+             ctx.trigger('changed');
+            
+            return false;
+        }
+        
+        getOptionsForPagingPlugin() { 
+
+            return {
+                    callback: this.onPageSelected,
+                    callbackContext: this,
+                    items_per_page: this.pageSize, //Number of items per page
+                    num_display_entries: 2, //Number of pagination links shown
+                    num_edge_entries: 1, //Number of start and end points
+                    prev_text: this.prevButtonText,
+                    next_text: this.nextButtonText
+                  };
+        }
+
+        createPager() {
+
+            var opt = this.getOptionsForPagingPlugin();
+            //var x = <PagingPlugin> $(this.paginationContainer);
+            //x.pagination(this.totalItems, opt);
+            $(this.paginationContainer).pagination(this.totalItems, opt);
+
+        }
+
+        UpdateTotalItemsIfChanged(input)
+        {
+            if (this.totalItems == input.length) return;
+            this.totalItems = input.length;
+            this.createPager();    
+        };
+
+        execute(input: Model.Logo[])
+        {
+             this.UpdateTotalItemsIfChanged(input);
+             return input.slice(this.startingElement, this.lastElement);
+        } 
+    }
+
+    ///////////////////////////////////////////////////////
 
     export class SearchFilter
         extends Events.Observable
@@ -80,29 +171,15 @@ module Filters.Pipeline {
             $('#searchButton').click((e: JQueryEventObject) => { this.onSearchTextBoxChanged(e) });
         }
 
-        //verifyBackspaceKeyPress(event: JQueryEventObject) { 
-        //    var code = event.which;
-        //    if (code == 08) {
-        //        this.currentSearchText = $('.search').val();
-        //        //this.currentSearchText = this.currentSearchText.substring(0, this.currentSearchText.length - 1);
-        //        this.trigger('changed');
-        //    }
-        //    else {
-        //        this.onSearchTextBoxChanged(event);
-                
-        //    }
-        //}
-
+       
         onSearchTextBoxChanged(event: JQueryEventObject) { 
             this.currentSearchText =  $('.search').val();
-            //this.currentSearchText = this.currentSearchText.concat(String.fromCharCode(event.which));
             this.trigger('changed');
             
         }
 
         execute(input: Model.Logo[])
         {
-            //this.currentSearchText = $('.search').val();
             if (this.currentSearchText == '') return input;
 
             var filtered: Model.Logo[];

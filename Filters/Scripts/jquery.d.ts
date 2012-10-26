@@ -291,6 +291,16 @@ interface JQueryStatic {
    The jQuery instance members
 */
 interface JQuery {
+   
+    // FIXME: this is a design flaw
+    /*
+        This method should not be here. It was added to this interface as a compromise solution
+        to be able to call the pagination() mehtod on a jQuery element that has that plugin added.
+        It is pending the fix of this shortcut by extending the JQuery interface with the pagination plugin
+        interface.
+    */
+    pagination(number, any): any;
+
    /****
     AJAX
    *****/
@@ -305,6 +315,9 @@ interface JQuery {
 
    serialize(): string;
    serializeArray(): any[];
+
+
+
 
    /**********
     ATTRIBUTES
@@ -700,3 +713,7 @@ interface JQuery {
 
 declare var jQuery: JQueryStatic;
 declare var $: JQueryStatic;
+
+
+/// Adds
+

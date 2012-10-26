@@ -127,6 +127,7 @@
     </Content>
     <TypeScriptCompile Include="Scripts\Model.ts" />
     <TypeScriptCompile Include="Scripts\Knockout.d.ts" />
+    <Content Include="Scripts\jquery.pagination.js" />
     <Content Include="Scripts\Knockout.d.js">
       <DependentUpon>Knockout.d.ts</DependentUpon>
     </Content>

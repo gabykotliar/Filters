@@ -13,7 +13,7 @@
             width: 250px;
             height: 450px;
             border: solid 1px black;
-            text-align: center;
+            text-align: center;   
         }
 
         .name {
@@ -33,6 +33,11 @@
 
         #categories li {
             cursor: pointer;
+        }
+        
+        #pagination {
+            clear: both;
+            text-align: center;   
         }
     </style>
 </head>
@@ -68,6 +73,10 @@
             <img data-bind="attr:{src: ImageUrl}" />
         </div>
     </div>
+    <br />
+    <div id="pagination">
+        <span> Probando </span>
+    </div>
     
     <script src="Scripts/jquery-1.8.2.min.js"></script>
     <script src="Scripts/knockout-2.1.0.js"></script>
@@ -76,6 +85,7 @@
     <script src="Scripts/ServiceClient.js"></script>
     <script src="Scripts/FiltersPipeline.js"></script>
     <script src="Scripts/Views.js"></script>
+     <script src="Scripts/jquery.pagination.js"></script>
 
     <script type="text/javascript">
 
