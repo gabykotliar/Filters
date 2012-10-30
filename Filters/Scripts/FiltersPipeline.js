@@ -58,7 +58,7 @@ var Filters;
                 this.totalItems = totalItems;
                 this.startingElement = 0;
                 this.lastElement = 0;
-                this.pageSize = 9;
+                this.pageSize = 10;
                 this.pageIndex = 1;
                 this.prevButtonText = '<<';
                 this.nextButtonText = '>>';

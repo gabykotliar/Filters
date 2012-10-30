@@ -303,7 +303,6 @@ interface JQuery {
 
    /****
     AJAX
-   *****/
    ajaxComplete(handler: any): JQuery;
    ajaxError(handler: (evt: any, xhr: any, opts: any) => any): JQuery;
    ajaxSend(handler: (evt: any, xhr: any, opts: any) => any): JQuery;

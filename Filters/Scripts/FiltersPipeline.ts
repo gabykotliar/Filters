@@ -6,10 +6,6 @@
 
 module Filters.Pipeline {
 
-    //interface PagingPlugin
-    //{ 
-    //    pagination(number, any): any;
-    //}
     export class FiltersPipeline {
 
         filters: Filter[];
@@ -46,26 +42,6 @@ module Filters.Pipeline {
             }
         }
 
-        //fire(event) {
-        //    if (typeof event == "string")
-        //        event = { type: event };
-
-        //    if (!event.target)
-        //        event.target = this;
-
-        //    if (!event.type)
-        //        throw new Error("Event object missing 'type' property.");
-
-        //    if (this.listeners[event.type] instanceof Array) {
-        //        var list = this.listeners[event.type];
-
-        //        for (var i = 0, len = list.length; i < len; i++) {
-        //            var ctx = list[i].context || this;
-        //            list[i].func.call(ctx, event);
-        //        }
-        //    }
-        //}
-
         updateResults() {
 
             var temp = this.model.logos;
@@ -74,8 +50,6 @@ module Filters.Pipeline {
                 temp = this.filters[i].execute(temp);
             }
 
-            //mover a updatedFilteredWith(temp)
-            //this.updatedFilteredWith(temp);
             this.model.filtered.splice(0);
             for (var i = 0, len = temp.length; i < len; i++) {
                 this.model.filtered.push(temp[i]);
@@ -87,9 +61,6 @@ module Filters.Pipeline {
         execute(input: Model.Logo[]): Model.Logo[];
         on(eventType: string, callback: (event: any) => any, context?: any): any;
     }
-
-
-    // Filtro de Paginacion
 
     export class PagingFilter
         extends Events.Observable
@@ -106,7 +77,7 @@ module Filters.Pipeline {
             super();
             this.startingElement = 0;
             this.lastElement = 0;
-            this.pageSize = 9;
+            this.pageSize = 10;
             this.pageIndex = 1;
             this.prevButtonText = '<<';
             this.nextButtonText = '>>';
@@ -126,19 +97,16 @@ module Filters.Pipeline {
             return {
                     callback: this.onPageSelected,
                     callbackContext: this,
-                    items_per_page: this.pageSize, //Number of items per page
-                    num_display_entries: 2, //Number of pagination links shown
-                    num_edge_entries: 1, //Number of start and end points
+                    items_per_page: this.pageSize, 
+                    num_display_entries: 2, 
+                    num_edge_entries: 1, 
                     prev_text: this.prevButtonText,
                     next_text: this.nextButtonText
                   };
         }
 
         createPager() {
-
             var opt = this.getOptionsForPagingPlugin();
-            //var x = <PagingPlugin> $(this.paginationContainer);
-            //x.pagination(this.totalItems, opt);
             $(this.paginationContainer).pagination(this.totalItems, opt);
 
         }
@@ -156,8 +124,6 @@ module Filters.Pipeline {
              return input.slice(this.startingElement, this.lastElement);
         } 
     }
-
-    ///////////////////////////////////////////////////////
 
     export class SearchFilter
         extends Events.Observable
@@ -239,7 +205,7 @@ module Filters.Pipeline {
                 if (value === "true" || value === "false")
                     return value === "true";
             }
-            return; // returns undefined
+            return; 
         };
 
     }
