@@ -1,18 +1,28 @@
-    module Filters.Events {
+module Filters.Events {
 
     interface Listener {
         callback: (event: any) => any;
-        context: any;
+        context?: any;
     }
-    
-    
+
+    interface Event {
+        type: string;
+        listener: Listener;
+    }
 
     export class Observable {
 
         listeners: any;
 
-        constructor () {
-            this.listeners = {}
+        constructor (initialListeners?: Event[]) {
+            this.listeners = {};
+
+            if (initialListeners === undefined) return;
+
+            for (var i = 0, len = initialListeners.length; i < len; i++)
+            {
+                this.on(initialListeners[i].type, initialListeners[i].listener.callback, initialListeners[i].listener.context);
+            }
         }
 
         on(eventType: string, callback: (event: any) => any, context?: any) {

@@ -2,9 +2,15 @@ var Filters;
 (function (Filters) {
     (function (Events) {
         var Observable = (function () {
-            function Observable() {
+            function Observable(initialListeners) {
                 this.listeners = {
                 };
+                if(initialListeners === undefined) {
+                    return;
+                }
+                for(var i = 0, len = initialListeners.length; i < len; i++) {
+                    this.on(initialListeners[i].type, initialListeners[i].listener.callback, initialListeners[i].listener.context);
+                }
             }
             Observable.prototype.on = function (eventType, callback, context) {
                 if(this.listeners[eventType] === undefined) {

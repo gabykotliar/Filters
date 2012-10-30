@@ -3,43 +3,35 @@
 /// <reference path="Model.ts" />
 /// <reference path="Views.ts" />
 
-
 module Filters.Pipeline {
+
+    class Filter
+        extends Events.Observable {
+
+        constructor (onChangeCallback: () => void) { 
+            super();
+
+            this.on('changed', onChangeCallback);
+        }
+
+        execute (input: Model.Logo[]): Model.Logo[]
+        {
+            return input;
+        }
+    }
 
     export class FiltersPipeline {
 
         filters: Filter[];
-        listeners: { };
 
         constructor (public model: Views.IndexModel) {
+            
+            this.filters = new Filter[];
 
-            var cf = new Pipeline.CategoriesFilter();
-            cf.on('changed', () => {
-                this.updateResults();
-            });
-
-            var sf = new Pipeline.StateFilter();
-            sf.on('changed', () => {
-                this.updateResults();
-            });
-
-            var bf = new Pipeline.SearchFilter();
-            bf.on('changed', () => {
-                this.updateResults();
-            });
-
-            var pf = new Pipeline.PagingFilter(11);
-            pf.on('changed', () => { 
-                this.updateResults();
-            });
-
-            this.filters = [cf, sf, bf, pf];           
-
-            for (var i = 0, len = this.filters.length; i < len; i++) {
-                this.filters[i].on('changed', () => {
-                    this.updateResults();
-                });
-            }
+            this.filters.push(new CategoriesFilter(() => { this.updateResults() }));
+            this.filters.push(new StatusFilter(() => { this.updateResults ()}));
+            this.filters.push(new SearchFilter(() => { this.updateResults ()})); 
+            this.filters.push(new PagingFilter(() => { this.updateResults ()}, model.logos.length));
         }
 
         updateResults() {
@@ -50,31 +42,168 @@ module Filters.Pipeline {
                 temp = this.filters[i].execute(temp);
             }
 
+            this.updateModel(temp);
+        }
+
+        updateModel(filteted: Model.Logo[])
+        { 
             this.model.filtered.splice(0);
-            for (var i = 0, len = temp.length; i < len; i++) {
-                this.model.filtered.push(temp[i]);
+
+            for (var i = 0, len = filteted.length; i < len; i++) {
+                this.model.filtered.push(filteted[i]);
             }
         }
     }
 
-    interface Filter {
-        execute(input: Model.Logo[]): Model.Logo[];
-        on(eventType: string, callback: (event: any) => any, context?: any): any;
+    class CategoriesFilter
+        extends Filter
+    { 
+        currentCategory: string;
+        
+        constructor(onChangeCallback: () => void) {
+            super(onChangeCallback);
+
+            this.currentCategory = undefined;
+           
+            $('#categories li').click((e: JQueryEventObject) => { this.onCategoryChanged(e) });
+        }
+
+        onCategoryChanged(event: JQueryEventObject) { 
+
+            this.currentCategory = (<any>event.currentTarget).innerText;
+
+            this.trigger('changed');
+        }
+
+        execute(input: Model.Logo[])
+        {
+            if (this.currentCategory == 'All'  || this.currentCategory === undefined) return input;
+
+            var filtered: Model.Logo[];
+            filtered = [];
+            
+            for (var i = 0, len = input.length; i < len; i++)
+            { 
+                if (input[i].Category == this.currentCategory)
+                    filtered.push(input[i]);
+            }
+            
+            return filtered;
+        }
     }
 
-    export class PagingFilter
-        extends Events.Observable
-        implements Filter {
-            pageSize: number;
-            pageIndex: number;
-            prevButtonText: string;
-            nextButtonText: string;
-            paginationContainer: any;
-            startingElement: number;
-            lastElement: number;    
+    class StatusFilter
+        extends Filter {
 
-        constructor (public totalItems:number) {
-            super();
+        currentStatus: bool; 
+        
+        constructor (onChangeCallback: () => void) {
+            super(onChangeCallback);
+
+            this.currentStatus = undefined; 
+
+            $('.radioButton').click((e: JQueryEventObject) => { this.onStatusChanged(e) }); 
+        }
+
+        onStatusChanged(event: JQueryEventObject) {
+            
+            var statusLabel = (<any>event.currentTarget).value;
+            this.currentStatus = this.parseBool(statusLabel);
+            
+            this.trigger('changed');
+        }
+
+        execute(input: Model.Logo[])
+        {
+            if (this.currentStatus === undefined) return input;         
+
+            var filtered: Model.Logo[];
+            filtered = [];
+            
+            for (var i = 0, len = input.length; i < len; i++)
+            { 
+                if (input[i].Available == this.currentStatus) 
+                    filtered.push(input[i]);   
+            }
+
+            return filtered;
+        }
+
+        private parseBool(value) {
+            if (typeof value === "string") {
+                value = value.replace(/^\s+|\s+$/g, "").toLowerCase();
+                if (value === "true" || value === "false")
+                    return value === "true";
+            }
+            return; 
+        };
+    }
+
+    class SearchFilter
+        extends Filter { 
+
+        searchBox: JQuery;
+        currentSearchText: string;
+
+        constructor (onChangeCallback: () => void) {
+
+            super(onChangeCallback);
+
+            this.currentSearchText = '';
+
+            this.searchBox = $('.search');
+            $('#searchButton').click((e: JQueryEventObject) => { this.onSearchTextBoxChanged(e) });
+        }
+       
+        onSearchTextBoxChanged(event: JQueryEventObject) { 
+
+            this.currentSearchText =  this.searchBox.val();
+            this.trigger('changed');
+        }
+
+        execute(input: Model.Logo[])
+        {
+            if (this.currentSearchText === '') return input;
+
+            var filtered: Model.Logo[];
+            filtered = [];
+
+            for (var i = 0, len = input.length; i < len; i++)
+            { 
+                if (this.matchSearchValue(input[i]))
+                    filtered.push(input[i]);   
+            }
+
+            return filtered;
+        }
+
+        matchSearchValue(logo: Model.Logo)
+        { 
+            return this.containsSearchValue(logo.Description)
+                || this.containsSearchValue(logo.Name);
+        }
+
+        containsSearchValue(property: string)
+        { 
+            return property.indexOf(this.currentSearchText) != -1
+        }
+    }
+
+
+    class PagingFilter
+        extends Filter {
+
+        pageSize: number;
+        pageIndex: number;
+        prevButtonText: string;
+        nextButtonText: string;
+        paginationContainer: any;
+        startingElement: number;
+        lastElement: number;    
+
+        constructor (onChangeCallback: () => void, public totalItems:number) {
+            super(onChangeCallback);
+
             this.startingElement = 0;
             this.lastElement = 0;
             this.pageSize = 10;
@@ -82,6 +211,7 @@ module Filters.Pipeline {
             this.prevButtonText = '<<';
             this.nextButtonText = '>>';
             this.paginationContainer = $('#pagination');
+            this.createPager();
         }
 
         onPageSelected(pageIndex, pager, ctx) {
@@ -92,6 +222,13 @@ module Filters.Pipeline {
             return false;
         }
         
+        createPager() {
+
+            var opt = this.getOptionsForPagingPlugin();
+
+            $(this.paginationContainer).pagination(this.totalItems, opt);
+        }
+
         getOptionsForPagingPlugin() { 
 
             return {
@@ -105,147 +242,18 @@ module Filters.Pipeline {
                   };
         }
 
-        createPager() {
-            var opt = this.getOptionsForPagingPlugin();
-            $(this.paginationContainer).pagination(this.totalItems, opt);
-
-        }
-
-        UpdateTotalItemsIfChanged(input)
-        {
-            if (this.totalItems == input.length) return;
-            this.totalItems = input.length;
-            this.createPager();    
-        };
-
         execute(input: Model.Logo[])
         {
-             this.UpdateTotalItemsIfChanged(input);
+             this.updateTotalItemsIfChanged(input);
              return input.slice(this.startingElement, this.lastElement);
         } 
-    }
-
-    export class SearchFilter
-        extends Events.Observable
-        implements Filter { 
-        currentSearchText: string;
-
-        constructor () {
-            super();
-
-            this.currentSearchText = $('.search').val();
-            $('#searchButton').click((e: JQueryEventObject) => { this.onSearchTextBoxChanged(e) });
-        }
-
-       
-        onSearchTextBoxChanged(event: JQueryEventObject) { 
-            this.currentSearchText =  $('.search').val();
-            this.trigger('changed');
-            
-        }
-
-        execute(input: Model.Logo[])
-        {
-            if (this.currentSearchText == '') return input;
-
-            var filtered: Model.Logo[];
-            filtered = [];
-            
-
-            for (var i = 0, len = input.length; i < len; i++)
-            { 
-                if (input[i].Description.indexOf(this.currentSearchText) != -1  || input[i].Name.indexOf(this.currentSearchText) != -1  ) 
-                    filtered.push(input[i]);   
-            }
-            return filtered;
-        }
-    }
-
-    export class StateFilter
-        extends Events.Observable
-        implements Filter {
-        currentStateBool: bool; 
         
-        constructor () {
-            super();
-            this.currentStateBool = undefined; 
-
-            $('.radioButton').click((e: JQueryEventObject) => { this.onStateChanged(e) }); 
-        }
-
-        onStateChanged(event: JQueryEventObject) {
-            
-            this.setCurrentStateBool((<any>event.currentTarget).value); 
-            this.trigger('changed');
-        }
-
-        
-        setCurrentStateBool(currentState: string) {
-            this.currentStateBool = this.parseBool(currentState);
-        }
-
-        execute(input: Model.Logo[])
+        updateTotalItemsIfChanged(input)
         {
-            if (this.currentStateBool == undefined) return input;         
+            if (this.totalItems == input.length) return;
 
-            var filtered: Model.Logo[];
-            filtered = [];
-            
-            for (var i = 0, len = input.length; i < len; i++)
-            { 
-                if (input[i].Available == this.currentStateBool) 
-                    filtered.push(input[i]);   
-            }
-            return filtered;
-        }
-
-        private parseBool(value) {
-            if (typeof value === "string") {
-                value = value.replace(/^\s+|\s+$/g, "").toLowerCase();
-                if (value === "true" || value === "false")
-                    return value === "true";
-            }
-            return; 
-        };
-
-    }
-
-    export class CategoriesFilter
-        extends Events.Observable
-        implements Filter
-    { 
-        currentCategory: string;
-        
-        constructor() {
-            super();
-
-            this.currentCategory = 'All';
-           
-            $('#categories li').click((e: JQueryEventObject) => { this.onCategoryChanged(e) });
-        }
-
-        onCategoryChanged(event: JQueryEventObject) { 
-
-            this.currentCategory = (<any>event.currentTarget).innerText;
-         
-            this.trigger('changed');
-        }
-
-        execute(input: Model.Logo[])
-        {
-            if (this.currentCategory == 'All') return input;
-
-            var filtered: Model.Logo[];
-            filtered = [];
-            
-            for (var i = 0, len = input.length; i < len; i++)
-            { 
-                if (input[i].Category == this.currentCategory)
-                    filtered.push(input[i]);
-                
-            }
-            
-            return filtered;
+            this.totalItems = input.length;
+            this.createPager();    
         }
     }
 }
