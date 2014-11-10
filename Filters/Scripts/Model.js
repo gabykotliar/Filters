@@ -1,5 +1,1 @@
-var Filters;
-(function (Filters) {
-    
-})(Filters || (Filters = {}));
-
+﻿//# sourceMappingURL=Model.js.map

@@ -1,29 +1,23 @@
-/// <reference path="jquery.d.ts" />
-/// <reference path="Knockout.d.ts" />
-/// <reference path="ServiceClient.ts" />
+﻿/// <reference path="ServiceClient.ts" />
 /// <reference path="Model.ts" />
 /// <reference path="FiltersPipeline.ts" />
+/// <reference path="typings/knockout/knockout.d.ts" />
 
-module Filters.Views {    
-
-    declare var ko: Knockout;
+module Filters.Views {
 
     export class Index {
-        
-        Init() 
-        {            
+
+        Init() {
             this.LoadDataAsync();
         }
 
-        LoadDataAsync() 
-        {
-            var service = new ServiceClients.LogoService('/api/logo');            
+        LoadDataAsync() {
+            var service = new ServiceClients.LogoService('/api/logo');
 
             service.getAll(this.LoadDataCompleted);
         }
 
-        LoadDataCompleted(data: Model.Logo[]) 
-        {
+        LoadDataCompleted(data: Model.Logo[]) {
             var model = new IndexModel(data);
 
             var pipeline = new Pipeline.FiltersPipeline(model);
@@ -35,10 +29,10 @@ module Filters.Views {
 
     export class IndexModel {
 
-        filtered: Model.Logo[];
+        filtered: KnockoutObservableArray<Model.Logo>;
 
-        constructor (public logos: Model.Logo[]) {
-            
+        constructor(public logos: Model.Logo[]) {
+
             this.filtered = ko.observableArray([]);
         }
     }

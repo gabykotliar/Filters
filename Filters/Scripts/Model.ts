@@ -1,10 +1,9 @@
-module Filters.Model { 
+﻿module Filters.Model {
 
-    export interface Logo 
-    { 
+    export interface Logo {
         Name: string;
         Description?: string;
-        Available?: bool;
+        Available?: boolean;
         ImageUrl?: string;
         Category?: string;
     }

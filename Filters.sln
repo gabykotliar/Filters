@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filters", "Filters\Filters.csproj", "{FC3BB423-AFD2-4B18-9468-7D4E046904A7}"
-EndProject
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0C64DD10-8503-4B19-B025-865A1F96A967}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -10,16 +10,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0C64DD
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filters", "Filters\Filters.csproj", "{6AE80B1C-04A5-4D70-B3A9-306D27AD22F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FC3BB423-AFD2-4B18-9468-7D4E046904A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FC3BB423-AFD2-4B18-9468-7D4E046904A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FC3BB423-AFD2-4B18-9468-7D4E046904A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FC3BB423-AFD2-4B18-9468-7D4E046904A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AE80B1C-04A5-4D70-B3A9-306D27AD22F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AE80B1C-04A5-4D70-B3A9-306D27AD22F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AE80B1C-04A5-4D70-B3A9-306D27AD22F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AE80B1C-04A5-4D70-B3A9-306D27AD22F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

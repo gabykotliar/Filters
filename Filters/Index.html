@@ -64,6 +64,10 @@
          </div>
     </section>
 
+    <div id="pagination">
+        <span> Probando </span>
+    </div>
+
     <div id="logos" data-bind="foreach: filtered">
         <div class="logo">
             <div class="name" data-bind="text: Name"></div>
@@ -72,14 +76,11 @@
             <div class="descriptions" data-bind="text: Description"></div>
             <img data-bind="attr:{src: ImageUrl}" />
         </div>
-    </div>
-    <br />
-    <div id="pagination">
-        <span> Probando </span>
-    </div>
+    </div>    
+
     
-    <script src="Scripts/jquery-1.8.2.min.js"></script>
-    <script src="Scripts/knockout-2.1.0.js"></script>
+    <script src="Scripts/jquery-2.1.1.min.js"></script>
+    <script src="Scripts/knockout-3.2.0.js"></script>
     <script src="Scripts/Events.js"></script>
     <script src="Scripts/Model.js"></script>    
     <script src="Scripts/ServiceClient.js"></script>

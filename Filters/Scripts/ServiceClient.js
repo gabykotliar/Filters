@@ -1,3 +1,4 @@
+﻿/// <reference path="Model.ts" />
 var Filters;
 (function (Filters) {
     (function (ServiceClients) {
@@ -7,6 +8,7 @@ var Filters;
             }
             LogoService.prototype.getAll = function (successCallback) {
                 this.onSuccess = successCallback;
+
                 var r = $.ajax(this.serviceUrl, {
                     type: 'GET',
                     accepts: 'JSON',
@@ -15,17 +17,18 @@ var Filters;
                     error: this.handleError
                 });
             };
+
             LogoService.prototype.getAllSucces = function (data, textStatus, jqXHR) {
                 this.onSuccess(data);
             };
+
             LogoService.prototype.handleError = function (jqXHR, textStatus, errorThrow) {
                 alert(errorThrow);
             };
             return LogoService;
         })();
-        ServiceClients.LogoService = LogoService;        
+        ServiceClients.LogoService = LogoService;
     })(Filters.ServiceClients || (Filters.ServiceClients = {}));
     var ServiceClients = Filters.ServiceClients;
-
 })(Filters || (Filters = {}));
-
+//# sourceMappingURL=ServiceClient.js.map

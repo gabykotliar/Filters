@@ -1,11 +1,11 @@
-module Filters.Events {
+﻿module Filters.Events {
 
-    interface Listener {
+    export interface Listener {
         callback: (event: any) => any;
         context?: any;
     }
 
-    interface Event {
+    export interface Event {
         type: string;
         listener: Listener;
     }
@@ -14,13 +14,12 @@ module Filters.Events {
 
         listeners: any;
 
-        constructor (initialListeners?: Event[]) {
+        constructor(initialListeners?: Event[]) {
             this.listeners = {};
 
-            if (initialListeners === undefined) return;
+            if (initialListeners === undefined || initialListeners == null) return;
 
-            for (var i = 0, len = initialListeners.length; i < len; i++)
-            {
+            for (var i = 0, len = initialListeners.length; i < len; i++) {
                 this.on(initialListeners[i].type, initialListeners[i].listener.callback, initialListeners[i].listener.context);
             }
         }
@@ -28,7 +27,7 @@ module Filters.Events {
         on(eventType: string, callback: (event: any) => any, context?: any) {
 
             if (this.listeners[eventType] === undefined)
-                this.listeners[eventType] = new Listener[]();
+                this.listeners[eventType] = new Array<Listener>();
 
             this.listeners[eventType].push({ context: context, callback: callback });
         }
